@@ -165,3 +165,8 @@ mvn test
 ## License
 
 Apache 2.0
+
+## 后续规划
+1. 支持所有java-agent框架的trace集成
+2. 支持模型,agent评估
+3. etc...
