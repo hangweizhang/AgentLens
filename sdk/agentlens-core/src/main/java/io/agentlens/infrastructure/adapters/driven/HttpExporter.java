@@ -31,7 +31,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 /**
  * 基于 HTTP 的导出器：将 Span/Trace 上报到 AgentLens Collector。
  * <p>
- * 使用内存队列缓冲，达到批量大小或定时触发时向 Collector 的 /v1/traces 发送 JSON 数组。
+ * 使用内存队列缓冲，达到批量大小或定时触发时向 Collector 的 /api/v1/traces 发送 JSON 数组。
  * 支持配置批量大小、刷新间隔与超时。
  * </p>
  */
@@ -130,7 +130,7 @@ public class HttpExporter implements ExporterPort {
             String json = objectMapper.writeValueAsString(batch);
 
             HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(collectorUrl + "/v1/traces"))
+                .uri(URI.create(collectorUrl + "/api/v1/traces"))
                 .header("Content-Type", "application/json")
                 .POST(HttpRequest.BodyPublishers.ofString(json))
                 .timeout(Duration.ofSeconds(10))

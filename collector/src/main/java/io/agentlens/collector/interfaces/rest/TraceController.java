@@ -44,10 +44,10 @@ public class TraceController {
      */
     @GetMapping("/projects/{projectId}/traces")
     public ResponseEntity<Page<TraceListItemDTO>> listTraces(
-        @PathVariable String projectId,
-        @RequestParam(required = false) String status,
-        @RequestParam(defaultValue = "0") int page,
-        @RequestParam(defaultValue = "20") int size
+        @PathVariable("projectId") String projectId,
+        @RequestParam(name = "status", required = false) String status,
+        @RequestParam(name = "page", defaultValue = "0") int page,
+        @RequestParam(name = "size", defaultValue = "20") int size
     ) {
         Page<TraceListItemDTO> traces = queryService.listTraces(projectId, status, page, size);
         return ResponseEntity.ok(traces);
@@ -57,7 +57,7 @@ public class TraceController {
      * Get trace detail with all spans.
      */
     @GetMapping("/traces/{traceId}")
-    public ResponseEntity<TraceDetailDTO> getTraceDetail(@PathVariable String traceId) {
+    public ResponseEntity<TraceDetailDTO> getTraceDetail(@PathVariable("traceId") String traceId) {
         return queryService.getTraceDetail(traceId)
             .map(ResponseEntity::ok)
             .orElse(ResponseEntity.notFound().build());
@@ -68,8 +68,8 @@ public class TraceController {
      */
     @GetMapping("/projects/{projectId}/stats")
     public ResponseEntity<ProjectStatsDTO> getProjectStats(
-        @PathVariable String projectId,
-        @RequestParam(defaultValue = "7") int days
+        @PathVariable("projectId") String projectId,
+        @RequestParam(name = "days", defaultValue = "7") int days
     ) {
         ProjectStatsDTO stats = queryService.getProjectStats(projectId, days);
         return ResponseEntity.ok(stats);

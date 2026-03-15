@@ -61,6 +61,9 @@ public class TraceIngestionService {
         String name = (String) data.get("name");
         String spanType = (String) data.get("spanType");
 
+        // 先确保 Trace 存在，避免 Span 插入时外键约束失败（SDK 批量中可能先发 Span）
+        ensureTraceExists(traceId);
+
         SpanRecord span = spanRepository.findById(spanId)
             .orElseGet(() -> new SpanRecord(spanId, traceId, name, spanType));
 
@@ -100,8 +103,6 @@ public class TraceIngestionService {
         }
 
         spanRepository.save(span);
-
-        ensureTraceExists(traceId);
 
         log.debug("Ingested span: {} ({})", name, spanId);
     }
