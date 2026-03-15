@@ -1,0 +1,50 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: agentlens-postgres
+    environment:
+      POSTGRES_DB: agentlens
+      POSTGRES_USER: agentlens
+      POSTGRES_PASSWORD: agentlens
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U agentlens"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  collector:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.collector
+    container_name: agentlens-collector
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: agentlens
+      DB_USER: agentlens
+      DB_PASSWORD: agentlens
+    ports:
+      - "4317:4317"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  dashboard:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.dashboard
+    container_name: agentlens-dashboard
+    ports:
+      - "3000:80"
+    depends_on:
+      - collector
+
+volumes:
+  postgres_data:

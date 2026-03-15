@@ -1,0 +1,47 @@
+# Maven
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+*.jar
+*.war
+*.ear
+*.class
+
+# IDE
+.idea/
+*.iml
+*.ipr
+*.iws
+.vscode/
+*.swp
+*.swo
+*~
+
+# Node / Dashboard
+node_modules/
+dashboard/dist/
+dashboard/.env
+dashboard/.env.local
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# Build / OS
+.DS_Store
+Thumbs.db
+*.log
+*.tmp
+
+# Collector runtime
+collector/*.db
+*.db
+agentlens.db
+
+# Docker (optional, keep compose)
+# docker/*.log
+
+# Local config (do not commit secrets)
+.env
+.env.local
+*.local.yml

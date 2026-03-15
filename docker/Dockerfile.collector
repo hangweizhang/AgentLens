@@ -1,0 +1,33 @@
+# Build stage
+FROM maven:3.9-eclipse-temurin-17 AS builder
+
+WORKDIR /app
+
+# Copy pom files first for dependency caching
+COPY pom.xml .
+COPY sdk/agentlens-core/pom.xml sdk/agentlens-core/
+COPY sdk/agentlens-springai/pom.xml sdk/agentlens-springai/
+COPY sdk/agentlens-langchain4j/pom.xml sdk/agentlens-langchain4j/
+COPY sdk/agentlens-agentscope/pom.xml sdk/agentlens-agentscope/
+COPY collector/pom.xml collector/
+
+# Download dependencies
+RUN mvn dependency:go-offline -B
+
+# Copy source code
+COPY sdk/ sdk/
+COPY collector/ collector/
+
+# Build
+RUN mvn clean package -DskipTests -pl collector -am
+
+# Runtime stage
+FROM eclipse-temurin:17-jre-alpine
+
+WORKDIR /app
+
+COPY --from=builder /app/collector/target/*.jar app.jar
+
+EXPOSE 4317
+
+ENTRYPOINT ["java", "-jar", "app.jar"]
